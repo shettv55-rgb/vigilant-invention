@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Plataforma de Cursos — CursosPro</title>
+<style>
+  :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--accent-2:#7c3aed;--glass: rgba(255,255,255,0.03);--radius:14px;--max-width:1200px;--gap:18px;--ff-system: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue";}
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;font-family:var(--ff-system);background:linear-gradient(180deg,#071028 0%, #041224 100%);color:#e6eef8;padding:24px;display:flex;justify-content:center;}
+  .container{width:100%;max-width:var(--max-width);}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .brand{display:flex;gap:12px;align-items:center;}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:800;font-size:18px;color:#042029;overflow:hidden;}
+  nav{display:flex;gap:8px;align-items:center}
+  a.btn{text-decoration:none;padding:8px 12px;border-radius:10px;background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.04);font-weight:600;}
+  .top-actions{display:flex;gap:8px;align-items:center}
+  button.control{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);padding:8px 10px;border-radius:10px}
+  .hero{background:var(--glass);padding:18px;border-radius:16px;margin-bottom:20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;}
+  .hero .title{font-size:20px;font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--gap);}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius); padding:16px; position:relative; overflow:hidden;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:10px;min-height:220px;transition:transform .18s ease, box-shadow .18s ease;}
+  .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+  .thumb{height:110px;border-radius:10px;background:linear-gradient(90deg,#0b1220,#081028);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--muted);font-size:28px}
+  .tags{display:flex;gap:8px;flex-wrap:wrap}
+  .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted)}
+  .meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+  .price{font-weight:900;color:var(--accent);background:rgba(6,182,212,0.06);padding:6px 10px;border-radius:8px}
+  .btn-outline{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;text-decoration:none;font-weight:700;cursor:pointer;}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+  .modal{background:linear-gradient(180deg,#071028,#061224);padding:18px;border-radius:14px;max-width:900px;width:100%;border:1px solid rgba(255,255,255,0.04)}
+  .modal header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .close{background:transparent;border:0;color:var(--muted);font-weight:800;cursor:pointer;}
+  .enroll{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;font-weight:800;color:#042029}
+  .small{font-size:13px;color:var(--muted)}
+  footer{margin-top:22px;color:var(--muted);font-size:14px;display:flex;justify-content:space-between}
+  @media (max-width:900px){.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}.hero{flex-direction:column;align-items:stretch}header{flex-direction:column;align-items:flex-start;gap:12px}}
+  /* purchase modal styles */
+  .purchase-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:80; }
+  .purchase-box { width: 360px; background:#071028; border-radius:12px; padding:18px; color: #e6eef8; border:1px solid rgba(255,255,255,0.04); }
+  .purchase-box input { width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit; margin-top:8px; }
+  .purchase-actions { display:flex; gap:8px; margin-top:12px; justify-content:flex-end; }
+  .btn-white { background:transparent; border:1px solid rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px; color:var(--muted); cursor:pointer; }
+  .btn-pay { background:var(--accent); color:#042029; padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:800; }
+</style>
+</head>
+<body>
+<div class="container" role="main">
+  <header>
+    <div class="brand">
+      <div class="logo" id="logoBox">CP</div>
+      <div>
+        <div style="font-weight:800">CursosPro</div>
+        <div class="small">Aprenda online — exemplo</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <div class="profile small" id="profileShort" style="display:none">
+        <div class="avatar"><img id="avatarImg" src="" alt="avatar" style="width:40px;height:40px;border-radius:8px"></div>
+        <div>
+          <div id="profileName">Usuário</div>
+          <div id="profileEmail" class="small"></div>
+        </div>
+      </div>
+
+      <nav aria-label="principal">
+        <a class="btn" href="#" data-view="home">Home</a>
+        <a class="btn" href="#" data-view="meus">Minha Área</a>
+        <a class="btn" href="#" data-view="sobre">Sobre</a>
+      </nav>
+
+      <button id="loginBtn" class="control">Entrar / Cadastrar</button>
+      <button id="logoutBtn" class="control" style="display:none">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="view-home">
+      <section class="hero">
+        <div>
+          <div class="title">Aprenda habilidades reais — cursos curtos e práticos</div>
+          <div class="small" style="margin-top:6px">Clique em <strong>Comprar</strong> para iniciar o pagamento via Stripe (requer backend).</div>
+        </div>
+      </section>
+
+      <section id="cursos" class="grid" aria-live="polite"></section>
+    </section>
+
+    <section id="view-meus" style="display:none">
+      <h2>Minha Área</h2>
+      <div id="meusCursos"></div>
+    </section>
+
+    <section id="view-sobre" style="display:none">
+      <h2>Sobre</h2>
+      <p class="small">Exemplo de plataforma educativa — integração Stripe (frontend pronta).</p>
+    </section>
+  </main>
+
+  <footer>
+    <div>© <span id="ano"></span> CursosPro — Projeto exemplo</div>
+    <div class="small">Feito com ❤️ — HTML/CSS/JS</div>
+  </footer>
+</div>
+
+<!-- modal login (sem alterações) -->
+<div id="loginModal" class="modal-backdrop" aria-hidden="true" style="display:none">
+  <div class="modal">
+    <header><h3>Entrar / Cadastrar</h3><button class="close" id="closeLogin">✕</button></header>
+    <div style="display:grid;gap:8px">
+      <form id="formLogin">
+        <input id="login_email" placeholder="Email" required />
+        <input id="login_pass" placeholder="Senha" type="password" required />
+        <div style="text-align:right"><button type="button" id="doLogin" class="enroll">Entrar</button></div>
+        <p class="small">Não tem conta? <a href="#" id="goRegister">Cadastre-se</a></p>
+      </form>
+      <form id="formRegister" style="display:none">
+        <input id="reg_name" placeholder="Nome" required/>
+        <input id="reg_email" placeholder="Email" required/>
+        <input id="reg_pass" placeholder="Senha" type="password" required/>
+        <div style="text-align:right"><button type="button" id="doRegister" class="enroll">Cadastrar</button></div>
+        <p class="small">Já tem conta? <a href="#" id="goLogin">Entrar</a></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- PURCHASE MODAL -->
+<div id="purchaseModal" class="purchase-modal" role="dialog" aria-hidden="true">
+  <div class="purchase-box" role="document">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong id="pmTitle">Curso</strong>
+      <button class="close" onclick="closePurchaseModal()">✕</button>
+    </div>
+    <p id="pmDesc" class="small" style="margin-top:8px"></p>
+    <div style="margin-top:8px;font-weight:800" id="pmPrice"></div>
+
+    <label class="small" style="display:block;margin-top:12px">Seu email</label>
+    <input id="pmEmail" type="email" placeholder="seu@exemplo.com" />
+
+    <div class="purchase-actions">
+      <button class="btn-white" onclick="closePurchaseModal()">Cancelar</button>
+      <button class="btn-pay" onclick="confirmPurchase()">Pagar agora</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= init ================= */
+document.getElementById('ano').textContent = new Date().getFullYear();
+
+/* =============== DATA: 30 cursos =============== */
+const courses = [
+  {id:1,title:"JavaScript Moderno",description:"ES6+, DOM, fetch e async/await.",price:129,thumbnail:"JS"},
+  {id:2,title:"Python para Iniciantes",description:"Fundamentos e automação com Python.",price:99,thumbnail:"Py"},
+  {id:3,title:"React do Zero",description:"Componentes, hooks e rotas.",price:199,thumbnail:"R"},
+  {id:4,title:"Node.js e APIs",description:"Construa APIs com Express.",price:149,thumbnail:"N"},
+  {id:5,title:"HTML & CSS Profissional",description:"Layouts modernos e responsivos.",price:79,thumbnail:"H"},
+  {id:6,title:"TypeScript Prático",description:"Tipagem, generics e patterns.",price:139,thumbnail:"TS"},
+  {id:7,title:"Banco de Dados SQL",description:"Modelagem e queries avançadas.",price:119,thumbnail:"DB"},
+  {id:8,title:"Git e GitHub",description:"Fluxos de trabalho e colaboração.",price:49,thumbnail:"G"},
+  {id:9,title:"Docker para Desenvolvedores",description:"Containers e deployments.",price:129,thumbnail:"D"},
+  {id:10,title:"Design UI/UX Básico",description:"Princípios de usabilidade.",price:89,thumbnail:"UX"},
+  {id:11,title:"Python Data Science",description:"Pandas, NumPy e visualização.",price:179,thumbnail:"DS"},
+  {id:12,title:"Machine Learning Introd.",description:"Modelos, treino e avaliação.",price:189,thumbnail:"ML"},
+  {id:13,title:"Next.js Avançado",description:"SSG, SSR e APIs.",price:219,thumbnail:"NX"},
+  {id:14,title:"Mobile com React Native",description:"Apps cross-platform.",price:169,thumbnail:"RN"},
+  {id:15,title:"Segurança Web",description:"OWASP, autenticação e hardening.",price:159,thumbnail:"S"},
+  {id:16,title:"Testing em JS",description:"Jest, React Testing Library.",price:109,thumbnail:"T"},
+  {id:17,title:"Performance Web",description:"Otimização e profiling.",price:129,thumbnail:"P"},
+  {id:18,title:"Automação com Bash & CLI",description:"Scripts para produtividade.",price:69,thumbnail:"B"},
+  {id:19,title:"Kubernetes Básico",description:"Deploy em clusters.",price:199,thumbnail:"K8"},
+  {id:20,title:"GraphQL",description:"APIs flexíveis com Apollo.",price:149,thumbnail:"GQ"},
+  {id:21,title:"Firebase e Auth",description:"Realtime DB, Auth e Hosting.",price:129,thumbnail:"F"},
+  {id:22,title:"C# e .NET Core",description:"Construindo backend robusto.",price:159,thumbnail:"C#"},
+  {id:23,title:"Unity para Iniciantes",description:"Crie seu primeiro jogo.",price:139,thumbnail:"U"},
+  {id:24,title:"Blender - Modelagem 3D",description:"Modelos e exportação.",price:109,thumbnail:"BL"},
+  {id:25,title:"SEO Técnico",description:"Melhore indexação e performance.",price:89,thumbnail:"SEO"},
+  {id:26,title:"Arquitetura de Software",description:"Patterns e escalabilidade.",price:199,thumbnail:"AS"},
+  {id:27,title:"DevOps Prático",description:"CI/CD e pipelines.",price:169,thumbnail:"DO"},
+  {id:28,title:"Rust Básico",description:"Segurança de memória e performance.",price:149,thumbnail:"RS"},
+  {id:29,title:"Blockchain Introdução",description:"Conceitos e dApps.",price:179,thumbnail:"BC"},
+  {id:30,title:"UX Writing",description:"Escreva microcopy eficiente.",price:69,thumbnail:"WX"}
+];
+
+/* ============== Local users (localStorage) ============== */
+let users = JSON.parse(localStorage.getItem('users') || '[]');
+let currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+function saveUsers(){ localStorage.setItem('users', JSON.stringify(users)); }
+function saveCurrentUser(){ localStorage.setItem('currentUser', JSON.stringify(currentUser)); }
+
+/* ================= UI auth ================= */
+function updateAuthUI(){
+  if(currentUser){
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = '';
+    document.getElementById('profileShort').style.display = 'flex';
+    document.getElementById('profileName').textContent = currentUser.name;
+    document.getElementById('profileEmail').textContent = currentUser.email;
+  } else {
+    document.getElementById('loginBtn').style.display = '';
+    document.getElementById('logoutBtn').style.display = 'none';
+    document.getElementById('profileShort').style.display = 'none';
+  }
+}
+updateAuthUI();
+
+document.getElementById('loginBtn').addEventListener('click', () => {
+  document.getElementById('loginModal').style.display = 'flex';
+  document.getElementById('formLogin').style.display = 'block';
+  document.getElementById('formRegister').style.display = 'none';
+  document.getElementById('loginModal').setAttribute('aria-hidden','false');
+});
+document.getElementById('closeLogin').addEventListener('click', () => {
+  document.getElementById('loginModal').style.display = 'none';
+  document.getElementById('loginModal').setAttribute('aria-hidden','true');
+});
+document.getElementById('goRegister').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('formLogin').style.display='none'; document.getElementById('formRegister').style.display='block'; });
+document.getElementById('goLogin').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('formLogin').style.display='block'; document.getElementById('formRegister').style.display='none'; });
+
+document.getElementById('doRegister').addEventListener('click', () => {
+  const name = document.getElementById('reg_name').value.trim();
+  const email = document.getElementById('reg_email').value.trim();
+  const pass = document.getElementById('reg_pass').value;
+  if(!name||!email||!pass){ alert('Preencha todos os campos'); return; }
+  if(users.find(u=>u.email===email)){ alert('Email já cadastrado'); return; }
+  const newUser = { id: Date.now(), name, email, pass, courses: [] };
+  users.push(newUser); saveUsers();
+  currentUser = newUser; saveCurrentUser();
+  updateAuthUI();
+  alert('Registrado e logado!'); document.getElementById('loginModal').style.display='none';
+  renderCourses();
+});
+
+document.getElementById('doLogin').addEventListener('click', () => {
+  const email = document.getElementById('login_email').value.trim();
+  const pass = document.getElementById('login_pass').value;
+  const found = users.find(u=>u.email===email && u.pass===pass);
+  if(!found){ alert('Email ou senha incorretos'); return; }
+  currentUser = found; saveCurrentUser(); updateAuthUI();
+  alert('Logado com sucesso!'); document.getElementById('loginModal').style.display='none';
+  renderCourses();
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  currentUser = null; saveCurrentUser(); updateAuthUI(); renderCourses();
+});
+
+/* ================= Render courses and buy flow ================= */
+const grid = document.getElementById('cursos');
+
+function renderCourses(){
+  grid.innerHTML = '';
+  courses.forEach(c => {
+    const owned = currentUser && Array.isArray(currentUser.courses) && currentUser.courses.includes(c.id);
+    const el = document.createElement('article'); el.className = 'card';
+    el.innerHTML = `
+      <div class="thumb">${c.thumbnail}</div>
+      <div style="font-weight:800">${c.title}</div>
+      <div class="small" style="margin-top:6px">${c.description}</div>
+      <div class="meta">
+        <div class="price">R$ ${String(c.price).replace('.',',')}</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-outline detailsBtn" data-id="${c.id}">Detalhes</button>
+          <button class="btn-outline buyBtn" data-id="${c.id}">${owned ? 'Comprado' : 'Comprar'}</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(el);
+  });
+
+  document.querySelectorAll('.detailsBtn').forEach(b => b.addEventListener('click', (e) => {
+    const id = Number(e.currentTarget.dataset.id);
+    openDetailsModal(courses.find(x=>x.id===id));
+  }));
+
+  // buy buttons open purchase modal (and then backend checkout)
+  document.querySelectorAll('.buyBtn').forEach(b => b.addEventListener('click', (e) => {
+    const id = Number(e.currentTarget.dataset.id);
+    if(!currentUser){ alert('Faça login para comprar'); return; }
+    const course = courses.find(x=>x.id===id);
+    openPurchaseModal(course);
+  }));
+}
+
+function openDetailsModal(course){
+  const text = `${course.title}\n\n${course.description}\n\nPreço: R$ ${course.price}\n\nDeseja comprar?`;
+  if(confirm(text)){
+    const btn = document.querySelector(`.buyBtn[data-id="${course.id}"]`);
+    if(btn) btn.click();
+  }
+}
+
+/* ================= Purchase modal + real Stripe checkout ================= */
+const BACKEND = 'http://localhost:3001'; // ajuste para a porta do seu backend
+
+let selectedCourse = null;
+
+function openPurchaseModal(course){
+  selectedCourse = course;
+  document.getElementById('pmTitle').textContent = course.title;
+  document.getElementById('pmDesc').textContent = course.description;
+  document.getElementById('pmPrice').textContent = 'Preço: R$ ' + String(course.price).replace('.',',');
+  // prefill email if logged in
+  document.getElementById('pmEmail').value = currentUser ? (currentUser.email || '') : '';
+  document.getElementById('purchaseModal').style.display = 'flex';
+  document.getElementById('purchaseModal').setAttribute('aria-hidden','false');
+}
+
+function closePurchaseModal(){
+  document.getElementById('purchaseModal').style.display = 'none';
+  document.getElementById('purchaseModal').setAttribute('aria-hidden','true');
+}
+
+// confirmPurchase: call backend /create-checkout-session, redirect to Stripe Checkout
+async function confirmPurchase(){
+  const email = (document.getElementById('pmEmail').value || '').trim();
+  if(!email || !email.includes('@')) { alert('Digite um email válido.'); return; }
+  if(!selectedCourse){ alert('Curso inválido.'); return; }
+
+  try {
+    // create checkout session on your backend (must return { url })
+    const body = {
+      courseId: selectedCourse.id,
+      userEmail: email,
+      // pass success/cancel back to this page so we can handle after return
+      success_url: window.location.origin + window.location.pathname + '?checkout=success&courseId=' + selectedCourse.id + '&session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: window.location.origin + window.location.pathname + '?checkout=cancel'
+    };
+
+    const res = await fetch(BACKEND + '/create-checkout-session', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+
+    if(!res.ok) throw new Error('Erro ao criar sessão no backend');
+    const data = await res.json();
+    if(data.url){
+      // close modal and redirect to Stripe Checkout
+      closePurchaseModal();
+      window.location.href = data.url;
+    } else {
+      throw new Error('Resposta inválida do backend: ' + JSON.stringify(data));
+    }
+  } catch(err){
+    console.error('Erro checkout:', err);
+    alert('Falha ao iniciar pagamento. Veja o console do navegador.');
+  }
+}
+
+/* =============== After-checkout handling =============== */
+/* Backend should implement POST /confirm-purchase { session_id } -> { success:true, courseId, userId }
+   If backend cannot confirm, we fallback and mark course locally for currentUser.
+*/
+(async function handleCheckoutReturn(){
+  const params = new URLSearchParams(location.search);
+  if(params.get('checkout') === 'success'){
+    const sessionId = params.get('session_id') || params.get('sessionId') || '';
+    const courseId = Number(params.get('courseId') || '');
+    if(sessionId && courseId){
+      try {
+        const res = await fetch(BACKEND + '/confirm-purchase', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ session_id: sessionId })
+        });
+        const data = await res.json();
+        if(res.ok && data.success){
+          alert('Compra confirmada pelo backend! Curso liberado.');
+          // optionally refresh UI or fetch purchases
+          if(currentUser && !currentUser.courses.includes(courseId)){
+            currentUser.courses.push(courseId);
+            saveCurrentUser();
+          }
+          renderCourses();
+          history.replaceState({}, document.title, window.location.pathname);
+          return;
+        } else {
+          throw new Error('Backend não confirmou compra: ' + JSON.stringify(data));
+        }
+      } catch(err){
+        console.warn('Não foi possível confirmar compra no backend:', err);
+        // fallback: mark course locally
+        if(currentUser){
+          if(!currentUser.courses.includes(courseId)) currentUser.courses.push(courseId);
+          saveCurrentUser(); saveUsers();
+          alert('Compra registrada localmente (fallback). Você pode acessar o curso em Minha Área.');
+          renderCourses();
+        }
+        history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  } else if(params.get('checkout') === 'cancel'){
+    alert('Checkout cancelado.');
+    history.replaceState({}, document.title, window.location.pathname);
+  }
+})();
+
+/* ================= Minha Área ================= */
+function loadMyCourses(){
+  const box = document.getElementById('meusCursos'); box.innerHTML = '';
+  if(!currentUser){ box.innerHTML = '<p class="small">Faça login para ver seus cursos.</p>'; return; }
+  if(!currentUser.courses || currentUser.courses.length === 0){ box.innerHTML = '<p class="small">Você ainda não comprou cursos.</p>'; return; }
+  currentUser.courses.forEach(cid => {
+    const c = courses.find(x=>x.id===cid);
+    if(!c) return;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.style.cursor = 'pointer';
+    div.innerHTML = `<div class="thumb" style="height:80px;font-size:20px">${c.thumbnail}</div><div style="font-weight:800">${c.title}</div><div class="small">${c.description}</div>`;
+    div.addEventListener('click', ()=> alert('Abrir curso: ' + c.title + '\n\n(Implementar player de aulas)'));
+    box.appendChild(div);
+  });
+}
+
+/* ============= Navigation (simple SPA) ============= */
+document.querySelectorAll('a[data-view]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const v = a.getAttribute('data-view');
+    document.getElementById('view-home').style.display = v === 'home' ? '' : 'none';
+    document.getElementById('view-meus').style.display = v === 'meus' ? '' : 'none';
+    document.getElementById('view-sobre').style.display = v === 'sobre' ? '' : 'none';
+    if(v === 'meus') loadMyCourses();
+  });
+});
+
+/* ============= initial render ============= */
+renderCourses();
+updateAuthUI();
+</script>
+</body>
+</html>
