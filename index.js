@@ -14,11 +14,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // Cursos cadastrados (30 cursos)
 const courses = [ /* seus cursos aqui */ ];
 
-// Servir frontend
-app.use(express.static(path.join(process.cwd(), "frontend"))); // renomeie "public" para "frontend"
+// Servir frontend da pasta "frontend"
+app.use(express.static(path.join(process.cwd(), "frontend")));
 
+// Rota principal abre cursos.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "frontend/index.html"));
+  res.sendFile(path.join(process.cwd(), "frontend/cursos.html"));
 });
 
 // Criar sessão de pagamento
