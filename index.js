@@ -19,7 +19,7 @@ app.use(express.static(path.join(process.cwd(), "frontend")));
 
 // Rota principal abre cursos.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "frontend/cursos.html"));
+  res.sendFile(path.join(process.cwd(), "frontend/curso.html"));
 });
 
 // Criar sessão de pagamento
