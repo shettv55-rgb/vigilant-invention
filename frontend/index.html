@@ -1,1 +1,97 @@
-<!DOCTYPE html><html><body><h1>Home Cursos</h1></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu com Botão Grande</title>
+<style>
+  :root {
+    --bg: #0f1724;
+    --card: #0b1220;
+    --muted: #94a3b8;
+    --accent: #06b6d4;
+    --accent-2: #7c3aed;
+    --radius: 14px;
+    --ff-system: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue";
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--ff-system); background: var(--bg); color: #e6eef8; }
+
+  /* Header / Menu */
+  header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 20px; }
+  .logo {
+    width: 48px; height: 48px;
+    background: #042029;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 20px; color: #e6eef8;
+  }
+
+  nav { display: flex; align-items: center; gap: 16px; }
+  nav a { text-decoration: none; color: #e6eef8; font-weight: 600; padding: 6px 12px; border-radius: var(--radius); transition: background .2s; }
+  nav a:hover { background: rgba(255,255,255,0.1); }
+
+  /* Botão grande "Ver Cursos" */
+  .btn-cursos {
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #042029;
+    background: var(--accent-2);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-cursos:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  }
+
+  /* Page content */
+  main { padding: 100px 24px 24px; text-align: center; }
+  h1 { font-size: 36px; margin-bottom: 20px; }
+  p { font-size: 18px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">CP</div>
+    CursosPro
+  </div>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Sobre</a>
+    <button class="btn-cursos" onclick="window.location.href='#cursos'">Ver Cursos</button>
+  </nav>
+</header>
+
+<main>
+  <h1>Bem-vindo ao CursosPro!</h1>
+  <p>Aprenda novas habilidades com cursos curtos e práticos.</p>
+
+  <section id="cursos" style="margin-top:50px;">
+    <h2>Cursos Disponíveis</h2>
+    <p>Aqui você verá todos os cursos que oferecemos.</p>
+  </section>
+</main>
+
+</body>
+</html>
