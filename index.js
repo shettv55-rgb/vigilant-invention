@@ -19,7 +19,7 @@ app.use(express.static(path.join(process.cwd(), "frontend")));
 
 // Rota principal abre cursos.html
 app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "frontend/curso.html"));
+  res.sendFile(path.join(process.cwd(), "frontend/curso.html")); // confirme o nome
 });
 
 // Criar sessão de pagamento
@@ -42,11 +42,13 @@ app.post("/create-checkout-session", async (req, res) => {
         quantity: 1
       }
     ],
-    success_url: "http://localhost:3000/sucesso.html",
-    cancel_url: "http://localhost:3000/cancelado.html",
+    success_url: "https://vigilant-invention-mh9t.onrender.com/sucesso.html",
+    cancel_url: "https://vigilant-invention-mh9t.onrender.com/cancelado.html",
   });
 
   res.json({ url: session.url });
 });
 
-app.listen(process.env.PORT || 3001, () => console.log("Backend rodando na porta 3001"));
+// Porta dinâmica do Render
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Backend rodando na porta ${PORT}`));
